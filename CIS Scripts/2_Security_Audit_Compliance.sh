@@ -215,7 +215,7 @@ fi
 Audit2_1_3="$($Defaults read "$plistlocation" OrgScore2_1_3)"
 # If organizational score is 1 or true, check status of client
 if [ "$Audit2_1_3" = "1" ]; then
-	btMenuBar="$($Defaults read /Users/"$currentUser"/Library/Preferences/com.apple.systemuiserver menuExtras | grep -c Bluetooth.menu)"
+	btMenuBar="$($Defaults read /Users/"$currentUser"/Library/Preferences/com.apple.systemuiserver | grep Visible.*bluetooth | tr -dc '0-9')"
 	# If client fails, then note category in audit file
 	if [ "$btMenuBar" = "0" ]; then
 		echo "* 2.1.3 Show Bluetooth status in menu bar" >> "$auditfilelocation"
@@ -294,7 +294,7 @@ if [ "$Audit2_3_2" = "1" ]; then
 	fi
 fi
 
-# 2.3.3 Familiarize users with screen lock tools or corner to Start Screen Saver 
+# 2.3.3 Familiarize users with screen lock tools or corner to lock screen //Start Screen Saver
 # Configuration Profile - Custom payload > com.apple.dock > wvous-tl-corner=0, wvous-br-corner=5, wvous-bl-corner=0, wvous-tr-corner=0
 # Verify organizational score
 Audit2_3_3="$($Defaults read "$plistlocation" OrgScore2_3_3)"
@@ -302,14 +302,14 @@ Audit2_3_3="$($Defaults read "$plistlocation" OrgScore2_3_3)"
 if [ "$Audit2_3_3" = "1" ]; then
 	# If client fails, then note category in audit file
 	CP_corner="$(/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep -E '(\"wvous-bl-corner\" =|\"wvous-tl-corner\" =|\"wvous-tr-corner\" =|\"wvous-br-corner\" =)')"
-	if [[ "$CP_corner" = *"5"* ]] ; then
+	if [[ "$CP_corner" = *"13"* ]] ; then
 		echo "$(date -u)" "2.3.4 passed cp" | tee -a "$logFile"
 		$Defaults write "$plistlocation" OrgScore2_3_3 -bool false; else
 		bl_corner="$($Defaults read /Users/"$currentUser"/Library/Preferences/com.apple.dock wvous-bl-corner)"
 		tl_corner="$($Defaults read /Users/"$currentUser"/Library/Preferences/com.apple.dock wvous-tl-corner)"
 		tr_corner="$($Defaults read /Users/"$currentUser"/Library/Preferences/com.apple.dock wvous-tr-corner)"
 		br_corner="$($Defaults read /Users/"$currentUser"/Library/Preferences/com.apple.dock wvous-br-corner)"
-		if [ "$bl_corner" = "5" ] || [ "$tl_corner" = "5" ] || [ "$tr_corner" = "5" ] || [ "$br_corner" = "5" ]; then
+		if [ "$bl_corner" = "13" ] || [ "$tl_corner" = "13" ] || [ "$tr_corner" = "13" ] || [ "$br_corner" = "13" ]; then
 			echo "$(date -u)" "2.3.3 passed" | tee -a "$logFile"
 			$Defaults write "$plistlocation" OrgScore2_3_3 -bool false; else
 			echo "* 2.3.3 Familiarize users with screen lock tools or corner to Start Screen Saver" >> "$auditfilelocation"
@@ -469,7 +469,7 @@ fi
 Audit2_4_10="$($Defaults read "$plistlocation" OrgScore2_4_10)"
 # If organizational score is 1 or true, check status of client
 if [ "$Audit2_4_10" = "1" ]; then
-	contentCacheStatus="$(/usr/bin/AssetCacheManagerUtil status 2>&1 | grep -c "Activated = 0;")"
+	contentCacheStatus="$(/usr/bin/AssetCacheManagerUtil status 2>&1 | grep -c "Activated: false")"
 	# If client fails, then note category in audit file
 	if [ "$contentCacheStatus" == 1 ]; then
  		echo "$(date -u)" "2.4.10 passed" | tee -a "$logFile"
@@ -523,23 +523,18 @@ Audit2_5_1_2="$($Defaults read "$plistlocation" OrgScore2_5_1_2)"
 if [ "$Audit2_5_1_2" = "1" ]; then
 	apfsyes="$(diskutil ap list)"
 	if [ "$apfsyes" != "No APFS Containers found" ]; then
-		DUINFO=$(diskutil info /)
-		LV_UUID=$(echo "$DUINFO" | awk '/\/ Partition UUID/ {print $5;exit}')
-					# Get the APFS Container ID for the boot drive's APFS volume.
-					CONTAINER_ID=$(echo "$DUINFO" | awk '/Part of Whole/ {print $4;exit}')
-					APFSINFO=$(diskutil ap list "$CONTAINER_ID")
-					APVOLINFO=$(echo "$APFSINFO" | grep -A7 "$LV_UUID")
-					ENCRYPTION=$(echo "$APVOLINFO" | awk '/FileVault/ {print $3;exit}')
-					if [ "$ENCRYPTION" != "Yes" ]; then
-						echo "* 2.5.1.2 Ensure all user storage APFS Volumes are encrypted" >> "$auditfilelocation"
-						echo "$(date -u)" "2.5.1.2 fix" | tee -a "$logFile"; else 
-						echo "$(date -u)" "2.5.1.2 passed" | tee -a "$logFile"
-						$Defaults write "$plistlocation" OrgScore2_5_1_2 -bool false	
-						fi
-					else 
-					echo "$(date -u)" "2.5.1.2 not applicable, CoreStorage storage enabled" | tee -a "$logFile"
-					fi
-				fi
+		diskEncryptionEnabled=$(diskutil info / | grep -c FileVault:.*Yes)
+		if [ "$diskEncryptionEnabled" = "0" ]; then
+			echo "* 2.5.1.2 Ensure all user storage APFS Volumes are encrypted" >> "$auditfilelocation"
+			echo "$(date -u)" "2.5.1.2 fix" | tee -a "$logFile"
+		else 
+			echo "$(date -u)" "2.5.1.2 passed" | tee -a "$logFile"
+			$Defaults write "$plistlocation" OrgScore2_5_1_2 -bool false	
+		fi
+	else 
+		echo "$(date -u)" "2.5.1.2 not applicable, CoreStorage storage enabled" | tee -a "$logFile"
+	fi
+fi
 
 	
 
@@ -793,7 +788,7 @@ if [ "$Audit2_8" = "1" ]; then
 	fi
 fi
 
-# 2.10 Enable Secure Keyboard Entry in terminal.app 
+# 2.9 Enable Secure Keyboard Entry in terminal.app 
 # Configuration Profile - Custom payload > com.apple.Terminal > SecureKeyboardEntry=true
 # Verify organizational score
 Audit2_9="$($Defaults read "$plistlocation" OrgScore2_9)"
@@ -978,7 +973,7 @@ fi
 Audit4_2="$($Defaults read "$plistlocation" OrgScore4_2)"
 # If organizational score is 1 or true, check status of client
 if [ "$Audit4_2" = "1" ]; then
-	wifiMenuBar="$($Defaults read /Users/"$currentUser"/Library/Preferences/com.apple.systemuiserver menuExtras | grep -c AirPort.menu)"
+	wifiMenuBar="$($Defaults read /Users/"$currentUser"/Library/Preferences/com.apple.systemuiserver | grep -c Visible.*airport)"
 	# If client fails, then note category in audit file
 	if [ "$wifiMenuBar" = "0" ]; then
 		echo "* 4.2 Enable Show Wi-Fi status in menu bar" >> "$auditfilelocation"

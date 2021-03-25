@@ -86,8 +86,8 @@ OrgScore1_6="true"
 # OrgScore1_6="false"
 
 # 2.1.1 Turn off Bluetooth, if no paired devices exist 
-OrgScore2_1_1="true"
-# OrgScore2_1_1="false"
+# OrgScore2_1_1="true"
+OrgScore2_1_1="false"
 
 ## 2.1.2 Turn off Bluetooth "Discoverable" mode when not pairing devices - not applicable to 10.9 and higher.
 ## Starting with OS X (10.9) Bluetooth is only set to Discoverable when the Bluetooth System Preference is selected. 
@@ -225,28 +225,28 @@ OrgScore2_5_9="true"
 # OrgScore2_5_9="false"
 
 # 2.6.1 iCloud configuration (Check for iCloud accounts) (Not Scored)
-OrgScore2_6_1="true"
-# OrgScore2_6_1="false"
+# OrgScore2_6_1="true"
+OrgScore2_6_1="false"
 
 # 2.6.2 iCloud keychain (Not Scored)
 # Configuration Profile - Restrictions payload > Functionality > Allow iCloud Keychain (unchecked)
-OrgScore2_6_2="true"
-# OrgScore2_6_2="false"
+# OrgScore2_6_2="true"
+OrgScore2_6_2="false"
 
 # 2.6.3 iCloud Drive (Not Scored)
 # Configuration Profile - Restrictions payload > Functionality > Allow iCloud Drive (unchecked)
-OrgScore2_6_3="true"
-# OrgScore2_6_3="false"
+# OrgScore2_6_3="true"
+OrgScore2_6_3="false"
 
 # 2.6.4 iCloud Drive Document sync
 # Configuration Profile - Restrictions payload - > Functionality > Allow iCloud Desktop & Documents (unchecked)
-OrgScore2_6_4="true"
-# OrgScore2_6_4="false"
+# OrgScore2_6_4="true"
+OrgScore2_6_4="false"
 
 # 2.6.5 iCloud Drive Desktop sync
 # Configuration Profile - Restrictions payload - > Functionality > Allow iCloud Desktop & Documents (unchecked)
-OrgScore2_6_5="true"
-# OrgScore2_6_5="false"
+# OrgScore2_6_5="true"
+OrgScore2_6_5="false"
 
 # 2.7.1 Time Machine Auto-Backup 
 # Time Machine is typically not used as an Enterprise backup solution
@@ -305,8 +305,8 @@ OrgScore3_6="true"
 
 # 4.1 Disable Bonjour advertising service 
 # Configuration Profile - Custom payload > com.apple.mDNSResponder > NoMulticastAdvertisements=true
-OrgScore4_1="true"
-# OrgScore4_1="false"
+# OrgScore4_1="true"
+OrgScore4_1="false"
 
 # 4.2 Enable "Show Wi-Fi status in menu bar" 
 OrgScore4_2="true"
@@ -374,9 +374,10 @@ OrgScore5_8="true"
 # OrgScore5_8="false"
 
 # 5.9 Require a password to wake the computer from sleep or screen saver
+# BigSur has a different name of storing this information
 # Configuration Profile - Security and Privacy payload > General > Require password * after sleep or screen saver begins (checked)
-OrgScore5_9="true"
-# OrgScore5_9="false"
+# OrgScore5_9="true"
+OrgScore5_9="false"
 
 # 5.10 Ensure system is set to hibernate and destroy FileVault key
 OrgScore5_10="true"
@@ -397,16 +398,17 @@ OrgScore5_13="true"
 
 # 5.14 Create a Login window banner
 # Policy Banner https://support.apple.com/en-us/HT202277
-OrgScore5_14="true"
-# OrgScore5_14="false"
+# OrgScore5_14="true"
+OrgScore5_14="false"
 
 ## 5.15 Do not enter a password-related hint (Not Scored)
 ## Not needed if 6.1.2 Disable "Show password hints" is enforced.
 
 # 5.16 Disable Fast User Switching (Not Scored)
+# BigSur has a different way of storing this information
 # Configuration Profile - LoginWindow payload > Options > Enable Fast User Switching (unchecked)
-OrgScore5_16="true"
-# OrgScore5_16="false"
+# OrgScore5_16="true"
+OrgScore5_16="false"
 
 ## 5.17 Secure individual keychains and items (Not Scored)
 
